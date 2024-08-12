@@ -131,6 +131,4 @@ function stopCodeInInterval() {
 }
 
 
-// todo the code should run in a web worker
 // todo use an imported version of JSCPP
-// todo use an imported version of the ace editor
