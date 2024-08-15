@@ -1,20 +1,21 @@
 <script lang="ts">
     import Editor from "./ui/Editor.svelte";
     import Simulator from "./ui/Simulator.svelte";
+    import {storable} from "./storable";
 
 
 
-    let simulationWidth = 50;
-    $: simulationWidth = Math.max(5, Math.min(95, simulationWidth));
+    const simulationWidth = storable<number>("simulationWidth", 50);
+    $: $simulationWidth = Math.max(5, Math.min(95, $simulationWidth));
 
     let startX = 0;
     let startWidth = 0;
 
     function startDrag(e: MouseEvent) {
         startX = e.clientX;
-        startWidth = simulationWidth;
+        startWidth = $simulationWidth;
         const mousemove = (e: MouseEvent) => {
-            simulationWidth = Math.max(5, Math.min(95, startWidth + (e.clientX - startX) / window.innerWidth * 100));
+            $simulationWidth = Math.max(5, Math.min(95, startWidth + (e.clientX - startX) / window.innerWidth * 100));
         };
         function mouseup() {
             window.removeEventListener('mousemove', mousemove);
@@ -46,12 +47,12 @@
 <!-- If the simulation is edit mode, just show the editor. -->
 
 <div id="outer">
-    <div style="width: calc({simulationWidth}% - 3px);">
-        <Editor width={simulationWidth}/>
+    <div style="width: calc({$simulationWidth}% - 3px);">
+        <Editor width={$simulationWidth}/>
     </div>
     <div style="width: 6px; background: white; cursor: col-resize;" on:mousedown={startDrag} role="none">
     </div>
-    <div style="width: calc({100 - simulationWidth}% - 3px)">
+    <div style="width: calc({100 - $simulationWidth}% - 3px)">
         <Simulator/>
     </div>
 </div>

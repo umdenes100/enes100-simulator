@@ -18,7 +18,7 @@
         font-weight: lighter;
     }
 
-    h1 {
+    h1, .info {
         font-size: 2em;
         display: flex;
         align-items: center;
@@ -106,8 +106,15 @@
 <h2>Simulation</h2>
 <div>
     The simulator has two parts: the simulation visual representation and the console.
-    The visual representation is a 4 meter wide by 2 meter tall box. The robot cannot leave the box.
-    The simulation runs constantly, even when your code is not running. You can click and drag
-    the robot to move it or set the location with the text boxes.
-    The output of the program (Enes100.print statements) will be displayed in the console below.
+    <ul>
+        <li>The visual representation is a 4 meter wide by 2 meter tall box. The robot cannot leave the box.</li>
+        <li>The simulation runs constantly, even when your code is not running. You can click and drag</li>
+        <li>the robot to move it or set the location with the text boxes.</li>
+        <li>The output of the program (Enes100.print statements) will be displayed in the console below.</li>
+    </ul>
+    <div class="info" style="font-size: unset"><img src={helpSVG} alt="" style="height: 100%">
+        Wondering why your vehicle moves randomly over the rumbles?
+    </div>
+    In real life, robots move randomly all the time. Especially over the rumble strips you will
+    need to assume that the robot will move randomly. This is your reminder!
 </div>

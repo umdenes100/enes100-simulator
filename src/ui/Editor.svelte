@@ -2,10 +2,13 @@
     import '../sim/code'
     import {session, startCode} from "../sim/code";
     import {onMount, tick} from "svelte";
-    import ace from 'brace';
-    import 'brace/mode/c_cpp';
-    import 'brace/theme/monokai';
-    import 'brace/ext/language_tools'
+    import * as ace from 'ace-builds/src-noconflict/ace';
+    import {Ace, Range} from "ace-builds";
+    import 'ace-builds/src-noconflict/mode-c_cpp';
+    import 'ace-builds/src-noconflict/theme-monokai';
+    import 'ace-builds/src-noconflict/ext-language_tools';
+    import {setCompleters, textCompleter} from 'ace-builds/src-noconflict/ext-language_tools';
+
     import {checkCode} from "../sim/checkCode";
     import {code, showVariables} from "../state";
     import VariablesTable from "./VariablesTable.svelte";
@@ -27,10 +30,12 @@
     import About from "./About.svelte";
     import Overlay from "./Overlay.svelte";
     import Help from "./Help.svelte";
+    import {completer} from "../sim/completers";
+
 
     export let width: number;
-    ace.Range = ace.acequire("ace/range").Range
-    let editor: ace.Editor;
+
+    let editor: Ace.Editor;
     let interval: number = 50;
     let showExampleSelector = false;
     let showInfo = false;
@@ -40,13 +45,23 @@
 
     onMount(() => {
         editor = ace.edit("editor");
+        // on ctrl s save
+        editor.commands.addCommand({
+            name: 'save',
+            bindKey: {win: 'Ctrl-S', mac: 'Command-S'},
+            exec: save
+        });
         editor.setTheme("ace/theme/monokai");
         editor.session.setMode("ace/mode/c_cpp");
+        setCompleters([completer, textCompleter])
+
+
         editor.setOptions({
             "enableBasicAutocompletion": true,
             "enableLiveAutocompletion": true,
             "useSoftTabs": true,
         })
+        // @ts-ignore
         editor.$blockScrolling = Infinity;
         let unsub = session.subscribe((s) => {
             editor.setReadOnly(!!s); // If session, should be readonly.
@@ -56,7 +71,7 @@
                 editor.session.removeMarker(Number(id))
             })
             if (s?.line) {
-                editor.session.addMarker(new ace.Range(s.line - 1, 0, s.line - 1, 1), "lineMarker", "fullLine", false)
+                editor.session.addMarker(new Range(s.line - 1, 0, s.line - 1, 1), "lineMarker", "fullLine", false)
             }
         })
         let unsub2 = showVariables.subscribe(resize)
@@ -64,6 +79,7 @@
             editor.destroy();
             unsub();
             unsub2();
+            // setCompleters([])
         }
     })
 
@@ -76,14 +92,14 @@
     }
 
     function save() {
-        const code = editor.getValue();
-        localStorage.setItem('code', code);
+        code.set(editor.getValue())
+        alert('Code saved to your browser. It will be restored when you open this page in the future. Save to an Arduino sketch if this code is important!')
     }
 
     function run() {
         // @ts-ignore
         const [fixedCode, success] = checkCode(editor.getValue());
-        console.log(success, fixedCode)
+        // console.log(success, fixedCode)
         code.set(fixedCode);
         editor.setValue(fixedCode)
         if (!success) return;
@@ -170,7 +186,7 @@ int main() {
 
 {#if showExampleSelector}
     <Overlay on:close={() => showExampleSelector = false}>
-    <ExampleSelector {setCode}/>
+        <ExampleSelector {setCode}/>
     </Overlay>
 {/if}
 

@@ -7,7 +7,7 @@ import {round} from "../utils";
 let $robot: Robot;
 robot.subscribe(value => $robot = value);
 
-export const defines: { [key: string]: string|number } = {
+export const ArduinoDefines: { [key: string]: string|number } = {
     "HIGH": 0x1,
     "LOW": 0x0,
     "INPUT": 0x0,
@@ -166,8 +166,8 @@ export const ArduinoH = {
         });
 
         // Make an instance of the class called enes100
-        for (let key in defines) {
-            rt.interp.newMacro({type: 'Identifier', val: key, space: ' '}, [{val: String(defines[key]), space: ' ', type: "Seperator"}])
+        for (let key in ArduinoDefines) {
+            rt.interp.newMacro({type: 'Identifier', val: key, space: ' '}, [{val: String(ArduinoDefines[key]), space: ' ', type: "Seperator"}])
         }
     }
 }

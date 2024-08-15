@@ -8,7 +8,7 @@ import {addIgnoredVariable} from "../code";
 let $robot: Robot;
 robot.subscribe(value => $robot = value);
 
-const defines: { [key: string]: number } = {
+export const Enes100Defines: { [key: string]: number } = {
     "CRASH_SITE": 0,
     "DATA": 1,
     "MATERIAL": 2,
@@ -100,13 +100,13 @@ function isConnected(rt: CRuntime, _this: any) {
 // Enes100.print(Type message) - console.log(message)
 function print(rt: CRuntime, _this: any, a: any) {
     if (!begun) throw new Error('You must call Enes100.begin(...) before calling Enes100.print(...)')
-    output.update(e => e + rt.makeValueString(a).replaceAll('"', ''));
+    output.update(e => (e + rt.makeValueString(a).replaceAll('"', '')).slice(-10000));
 }
 
 // Enes100.println(Type message) - console.log(message)
 function println(rt: CRuntime, _this: any, a: any) {
     if (!begun) throw new Error('You must call Enes100.begin(...) before calling Enes100.println(...)')
-    output.update(e => e + rt.makeValueString(a).replaceAll('"', '') + '\n');
+    output.update(e => (e + rt.makeValueString(a).replaceAll('"', '') + '\n').slice(-10000));
 }
 
 // Enes100.mission(int type, int message) - print appropriate message
@@ -151,8 +151,8 @@ function MLGetPrediction() {
     throw new Error('MLGetPrediction is not supported in the simulator!')
 }
 
+// noinspection JSUnusedGlobalSymbols
 export const Enes100H = {
-    // @ts-ignore
     load(rt: CRuntime) {
         begun = false;
 
@@ -175,11 +175,12 @@ export const Enes100H = {
 
         // Make an instance of the class called enes100
         rt.defVar("Enes100", typeVisionSystemClient, rt.defaultValue(typeVisionSystemClient, false));
-        for (let key in defines) {
-            rt.interp.newMacro({type: 'Identifier', val: key, space: ' '}, [{val: String(defines[key]), space: ' ', type: "Seperator"}])
+        for (let key in Enes100Defines) {
+            // noinspection SpellCheckingInspection (Seperator)
+            rt.interp.newMacro({type: 'Identifier', val: key, space: ' '}, [{val: String(Enes100Defines[key]), space: ' ', type: "Seperator"}])
         }
 
-        rt.regFunc((rt: CRuntime, _this: any, x: any, y: any) => rt.val(rt.floatTypeLiteral, x.v*1000 + y.v, false)
+        rt.regFunc((rt: CRuntime, _this: any, x: any, y: any) => rt.val(rt.floatTypeLiteral, x.v * 1000 + y.v, false)
             , "global", "Coordinate", [rt.intTypeLiteral, rt.intTypeLiteral], rt.floatTypeLiteral);
         addIgnoredVariable("Coordinate");
     }

@@ -2,6 +2,7 @@ import type {CRuntime} from "../JSCPPTypes";
 import {robot} from "../../state";
 import type {Robot} from "../Types";
 import {clamp} from "../utils";
+import {distanceSensor} from "../simulator";
 
 let $robot: Robot;
 robot.subscribe(value => $robot = value);
@@ -21,19 +22,35 @@ function turnOffMotors(rt: CRuntime, _this: any) {
     lastSet.left = 0
     lastSet.right = 0
 }
+
+let straightTimeout: number | undefined;
 //   void setLeftMotorPWM(int pwm);   // sets motors 1 and 2 speeds to specified pwm (pwm: -255 to 255)
 function setLeftMotorPWM(rt: CRuntime, _this: any, pwm: any) {
     if (!begun) throw new Error('You must call Tank.begin() before calling Tank.setLeftMotorPWM()')
     if (pwm.v !== clamp(pwm.v, 0, 255)) throw new Error(`In function Tank.setLeftMotorPWM(), PWM values must be between 0 and 255. You used ${pwm.v}.`)
     lastSet.left = pwm.v / 255
-    robot.set({...$robot, v: (lastSet.left + lastSet.right) / 2, w: (lastSet.right - lastSet.left) / 0.12})
+    clearTimeout(straightTimeout);
+    // in the case where lastSet.right is 0, delay the start of the robot to allow the other wheel to be set.
+    if (lastSet.right === 0) {
+        straightTimeout = setTimeout(() => {
+            robot.set({...$robot, v: (lastSet.left + lastSet.right) / 2, w: (lastSet.right - lastSet.left) / 0.12})
+        }, 110)
+    } else
+        robot.set({...$robot, v: (lastSet.left + lastSet.right) / 2, w: (lastSet.right - lastSet.left) / 0.12})
 }
 //   void setRightMotorPWM(int pwm);  // sets motors 3 and 4 speeds to specified pwm (pwm: -255 to 255)
 function setRightMotorPWM(rt: CRuntime, _this: any, pwm: any) {
     if (!begun) throw new Error('You must call Tank.begin() before calling Tank.setRightMotorPWM()')
     if (pwm.v !== clamp(pwm.v, 0, 255)) throw new Error(`In function Tank.setRightMotorPWM(), PWM values must be between 0 and 255. You used ${pwm.v}.`)
     lastSet.right = pwm.v / 255
-    robot.set({...$robot, v: (lastSet.left + lastSet.right) / 2, w: (lastSet.right - lastSet.left) / 0.12})
+    clearTimeout(straightTimeout);
+    // in the case where lastSet.right is 0, delay the start of the robot to allow the other wheel to be set.
+    if (lastSet.left === 0) {
+        straightTimeout = setTimeout(() => {
+            robot.set({...$robot, v: (lastSet.left + lastSet.right) / 2, w: (lastSet.right - lastSet.left) / 0.12})
+        }, 110)
+    } else
+        robot.set({...$robot, v: (lastSet.left + lastSet.right) / 2, w: (lastSet.right - lastSet.left) / 0.12})
 }
 //   float readDistanceSensor(int sensorId);  // reads and returns distance in meters (maximum of 1) from specified ultrasonic distance sensor (only valid for sensorIds 1 or 7)
 function readDistanceSensor(rt: CRuntime, _this: any, sensorId: any) {
@@ -42,7 +59,19 @@ function readDistanceSensor(rt: CRuntime, _this: any, sensorId: any) {
     if (sensorID !== clamp(sensorID, 1, 7)) {
         throw new Error(`In function readDistanceSensor, you set sensorId to ${sensorID}. Valid values are 1-7`)
     }
-    return rt.val(rt.floatTypeLiteral, 0, false)
+    const val = distanceSensor(0, 1)
+    return rt.val(rt.floatTypeLiteral, val, false)
+}
+
+//   int readBumpSensor(int sensorId);  // reads and returns the state of the specified infrared sensor (only valid for sensorIds 1 or 7)
+function readBumpSensor(rt: CRuntime, _this: any, sensorId: any) {
+    if (!begun) throw new Error('You must call Tank.begin() before calling Tank.readBumpSensor()')
+    let sensorID: number = sensorId.v
+    if (sensorID !== clamp(sensorID, 1, 7)) {
+        throw new Error(`In function readBumpSensor, you set sensorId to ${sensorID}. Valid values are 1-7`)
+    }
+    const val = distanceSensor(0, 0.1)  // if -1, then false, else true
+    return rt.val(rt.boolTypeLiteral, val !== -1 && val < 0.05, false)
 }
 
 //   // Functions only available on physical tanks
@@ -54,20 +83,19 @@ function setMotorPWM(rt: CRuntime, _this: any, motorId: any, pwm: any) {
 function readIrSensor(rt: CRuntime, _this: any, sensorId: any) {
     throw new Error('readIrSensor is not supported in the simulator!')
 }
-//   int readBumpSensor(int sensorId);  // reads and returns the state of the specified infrared sensor (only valid for sensorIds 1 or 7)
-function readBumpSensor(rt: CRuntime, _this: any, sensorId: any) {
-    throw new Error('readBumpSensor is not supported in the simulator!')
-}
 
 export const TankH = {
     // @ts-ignore
     load(rt: CRuntime) {
         begun = false;
+        lastSet.left = 0
+        lastSet.right = 0
         // @ts-ignore
         const typeTankClient = rt.newClass("TankClient", []);
         const typeSig = rt.getTypeSignature(typeTankClient);
         rt.types[typeSig].father = "object";
 
+        // Make sure to update completers in completers.ts!!!
         rt.regFunc(begin, typeTankClient, "begin", [], rt.voidTypeLiteral);
         rt.regFunc(turnOffMotors, typeTankClient, "turnOffMotors", [], rt.voidTypeLiteral);
         rt.regFunc(setLeftMotorPWM, typeTankClient, "setLeftMotorPWM", [rt.intTypeLiteral], rt.voidTypeLiteral);
@@ -75,7 +103,7 @@ export const TankH = {
         rt.regFunc(readDistanceSensor, typeTankClient, "readDistanceSensor", [rt.intTypeLiteral], rt.floatTypeLiteral);
         rt.regFunc(setMotorPWM, typeTankClient, "setMotorPWM", [rt.intTypeLiteral, rt.intTypeLiteral], rt.voidTypeLiteral);
         rt.regFunc(readIrSensor, typeTankClient, "readIrSensor", [rt.intTypeLiteral], rt.intTypeLiteral);
-        rt.regFunc(readBumpSensor, typeTankClient, "readBumpSensor", [rt.intTypeLiteral], rt.intTypeLiteral);
+        rt.regFunc(readBumpSensor, typeTankClient, "readBumpSensor", [rt.intTypeLiteral], rt.boolTypeLiteral);
 
         // Make an instance of the class called enes100
         rt.defVar("Tank", typeTankClient, rt.defaultValue(typeTankClient, false));

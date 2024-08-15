@@ -1,7 +1,7 @@
 <script lang="ts">
     import {onMount} from "svelte";
     import {startRender, stopRender} from "../sim/render";
-    import {arena, output, robot} from "../state";
+    import {arena, draggingRobot, output, robot} from "../state";
     import {resetRobot, stopRobot} from "../sim/simulator";
     import Controls from "./Controls.svelte";
     import {clamp, round} from "../sim/utils";
@@ -28,16 +28,20 @@
         const startRobot = {x: $robot.x, y: $robot.y}
         const rect = canvas.getBoundingClientRect()
         const mousemove = (e: MouseEvent) => {
-            const delta = {x: startMouse.x - e.clientX, y: startMouse.y - e.clientY}
+            const delta = {x: startMouse.x - e.clientX, y: e.clientY - startMouse.y}
             const robotDelta = {x: -delta.x / rect.width * $arena.width, y: -delta.y / rect.height * $arena.height}
-            robot.update(r => ({...r,
+            robot.update(r => ({
+                ...r,
                 x: clamp(round(startRobot.x + robotDelta.x, 4), .1, $arena.width - .1),
-                y: clamp(round(startRobot.y + robotDelta.y, 4), .1, $arena.height - .1)}))
+                y: clamp(round(startRobot.y + robotDelta.y, 4), .1, $arena.height - .1)
+            }))
         };
+        draggingRobot.set(true)
 
         function mouseup() {
             window.removeEventListener('mousemove', mousemove);
             window.removeEventListener('mouseup', mouseup);
+            draggingRobot.set(false)
         }
 
         window.addEventListener('mousemove', mousemove);
@@ -50,6 +54,9 @@
 </script>
 
 <style>
+    * {
+        user-select: none;
+    }
     #container {
         display: flex;
         flex-direction: column;
@@ -59,7 +66,8 @@
 
     canvas {
         width: 100%;
-        image-rendering: crisp-edges;
+        transform: scaleY(-1);
+        /*image-rendering: pixelated;*/
     }
 
     label {
@@ -70,7 +78,7 @@
     }
 
     label input {
-        width: 50px;
+        width: 60px;
     }
 </style>
 
@@ -106,15 +114,15 @@
         <!--        <label>Robot Angular Speed (rad/s)-->
         <!--            <input type="number" bind:value={$robot.w} step="0.1">-->
         <!--        </label>-->
-    <button on:click={resetRobot}>Reset robot to (1,1,0)</button>
-    <button on:click={stopRobot}>Stop Robot</button>
+        <button on:click={resetRobot}>Reset robot</button>
+        <button on:click={stopRobot}>Stop Robot</button>
     </div>
     <span>
         </span>
     <canvas bind:this={canvas} on:mousedown={startDrag}></canvas>
-    <label>
+    <label title={$output.length > 9995 ? "Autoscroll is automatically enabled when number of characters in output exceeds 10k." : ''}>
         Autoscroll
-        <input type="checkbox" bind:checked={autoscroll}>
+        <input type="checkbox" bind:checked={autoscroll} disabled={$output.length > 9995}>
     </label>
-    <textarea bind:value={$output} style="flex: 1; font-family: monospace; resize: none" bind:this={elem} readonly />
+    <textarea bind:value={$output} style="flex: 1; font-family: monospace; resize: none" bind:this={elem} readonly/>
 </div>

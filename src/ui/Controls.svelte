@@ -3,7 +3,7 @@
     import {createEventDispatcher} from 'svelte';
     import {round} from "../sim/utils";
 
-    const dispatch = createEventDispatcher<{ x: number, y: number }>();
+    const dispatch = createEventDispatcher<{ control: { x: number, y: number } }>();
 
     let coords = spring({x: 0, y: 0}, {
         stiffness: 0.1,
@@ -41,7 +41,7 @@
             //location in control space
             const loc = limit(targetLocSS)
             coords.set(loc);
-            let newVar = {x: round(loc.x, 2), y: round(-loc.y, 2)};
+            let newVar = {x: -round(loc.x, 2), y: round(-loc.y, 2)};
             dispatch('control', newVar);
         };
         function mouseup() {

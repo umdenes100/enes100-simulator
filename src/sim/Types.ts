@@ -1,8 +1,9 @@
 export type Obstacle = {
-    x: number, // meters
-    y: number, // meters
+    left: number, // meters
+    top: number, // meters
     width: number, // meters
     height: number, // meters
+    collisions: boolean, // true if the robot should collide with this obstacle and ultrasonics should see it.
 }
 
 export type Arena = {

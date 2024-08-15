@@ -49,7 +49,7 @@ export function startCode(code: string, interval: number = 100) {
         // @ts-ignore
         deb = JSCPP.run(code, input, config);
     } catch (e: any) {
-        debugger
+        // debugger
         console.error(e)
         output.update(o => o + '\n' + errorClarifiers(e.message))
         return;
@@ -84,12 +84,12 @@ async function nextCode() {
             if (!deb) return;
             done = deb.next()
             if ($delay) {
-                console.log('delaying', $delay)
+                // console.log('delaying', $delay)
                 await sleep($delay)
                 delay.set(undefined)
             }
             if ($session && !$session?.running){
-                console.log('updating variables')
+                // console.log('updating variables')
                 variables.set(deb.variable() as [])
             }
         } catch (e: any) {

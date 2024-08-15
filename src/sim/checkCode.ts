@@ -38,5 +38,7 @@ export function errorClarifiers(error: string): string {
         error = error.replaceAll(" in $global", "")
     if (error.includes('cannot find file'))
         return `${error}\n\nHint: no Arduino libraries other than Arduino.h, Enes100.h, and Tank.h are supported. From the std lib, only iostream (only cin and cout and endl), cmath, cctype, cstring, cstdio (partial), cstdlib (partial) are supported. Click the info button to learn more about limitations of the simulator.`
+    if (error.includes('method o(()) is not defined'))
+        return `${error.replaceAll('method o(()) is not defined in ', 'You cannot call this as a function: ')}\n\nHint: Review what the functions you can call are.`
     return error;
 }
