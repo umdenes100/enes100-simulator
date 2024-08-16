@@ -31,24 +31,23 @@ export class StaticWordCompleter implements Ace.Completer {
                 {caption: 'println', value: 'println(', meta: '(any) => (void)'},
                 {caption: 'mission', value: 'mission(', meta: '(number, number) => (void)'},
             ].map(word => ({...word, score: 1000})))
-        } else {
-            // return everything else.
-            Object.keys(Enes100Defines).forEach(word => wordList.push({
-                caption: word,
-                value: word,
-                meta: String(Enes100Defines[word])
-            }))
-            ignored_variables.forEach(word => wordList.push({
-                caption: word,
-                value: word,
-                meta: "Arduino"
-            }))
-            Object.keys(ArduinoDefines).forEach(word => wordList.push({
-                value: word,
-                caption: word,
-                meta: String(ArduinoDefines[word])
-            }))
         }
+        // return everything else.
+        Object.keys(Enes100Defines).forEach(word => wordList.push({
+            caption: word,
+            value: word,
+            meta: String(Enes100Defines[word])
+        }))
+        ignored_variables.forEach(word => wordList.push({
+            caption: word,
+            value: word,
+            meta: "Arduino"
+        }))
+        Object.keys(ArduinoDefines).forEach(word => wordList.push({
+            value: word,
+            caption: word,
+            meta: String(ArduinoDefines[word])
+        }))
 
         callback(null, wordList);
     }

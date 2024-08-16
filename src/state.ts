@@ -15,7 +15,8 @@ export const teamName: Writable<string> = writable('') // Team name. Just displa
 export const teamType: Writable<0 | 1 | 2 | 3 | 4 | 5> = writable(0) //
 export const markerId: Writable<number> = writable(0) // Only written to. But if we want it later.
 
-export const clearOutputWhenRun: Writable<boolean> = writable(true) // Should we clear the output when we run the program. Currently not settable but here for the future.
+export const clearOutputWhenRun: Writable<boolean> = storable('clearOutputWhenRun',true) // Should we clear the output when we run the program. Currently not settable but here for the future.
+export const resetRobotWhenRun: Writable<boolean> = storable('resetRobotWhenRun',true) // Should we reset the robot when we run the program. Currently not settable but here for the future.
 export const showVariables: Writable<boolean> = writable(true) // Should we show variables in the table?
 export const draggingRobot: Writable<boolean> = writable(false) // Are we currently dragging the robot (disable obstacle physics)
 

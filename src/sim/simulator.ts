@@ -180,3 +180,6 @@ export function distanceSensor(angle: number, maxDistance: number): number {
     if (val == maxDistance) return -1
     return val;
 }
+
+// todo randomize obstacles
+// todo randomize position of robot (high or low)

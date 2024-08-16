@@ -54,6 +54,9 @@
     cannot edit your code once the program has started. The editor automatically saves and
     restores your code whenever you run it / refresh the page.
 </div>
+<div class="info" style="font-size: unset; margin: 10px 0"><img src={infoSVG} alt="" style="height: 100%">
+    Press Ctrl+Space (Windows) to see the available functions and variables.
+</div>
 <h3>Editor Buttons (Editing)</h3>
 <div class='buttonDesc'>
     <button><img src={playSVG} alt=""></button>

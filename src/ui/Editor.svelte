@@ -26,11 +26,14 @@
     import examplesSVG from "./buttons/examples.svg";
     import infoSVG from "./buttons/info.svg";
     import helpSVG from "./buttons/help.svg";
+    import settingsSVG from "./buttons/settings.svg";
     import ExampleSelector from "./ExampleSelector.svelte";
     import About from "./About.svelte";
     import Overlay from "./Overlay.svelte";
     import Help from "./Help.svelte";
     import {completer} from "../sim/completers";
+    import {storable} from "../storable";
+    import Settings from "./Settings.svelte";
 
 
     export let width: number;
@@ -40,6 +43,7 @@
     let showExampleSelector = false;
     let showInfo = false;
     let showHelp = false;
+    let showSettings = false;
 
     const resize = () => tick().then(() => editor.resize())
 
@@ -49,11 +53,12 @@
         editor.commands.addCommand({
             name: 'save',
             bindKey: {win: 'Ctrl-S', mac: 'Command-S'},
-            exec: save
+            exec: () => save(true)
         });
         editor.setTheme("ace/theme/monokai");
         editor.session.setMode("ace/mode/c_cpp");
         setCompleters([completer, textCompleter])
+        let timeout = setInterval(() => save(false), 1000 * 5) // Save every 5 seconds regardless
 
 
         editor.setOptions({
@@ -79,7 +84,7 @@
             editor.destroy();
             unsub();
             unsub2();
-            // setCompleters([])
+            clearInterval(timeout)
         }
     })
 
@@ -91,9 +96,13 @@
         showExampleSelector = false;
     }
 
-    function save() {
+    let lastSaved = 0;
+    function save(showAlert = false) {
+        if (Date.now() - lastSaved < 1000) return;
+        lastSaved = Date.now();
         code.set(editor.getValue())
-        alert('Code saved to your browser. It will be restored when you open this page in the future. Save to an Arduino sketch if this code is important!')
+        if (showAlert === true) // if you send an event for showAlert, so do not replace with if (showAlert)
+            alert('Code saved to your browser. It will be restored when you open this page in the future. Save to an Arduino sketch if this code is important!')
     }
 
     function run() {
@@ -116,8 +125,8 @@ int main() {
         resize();
     }
 
-    let intervalIndex = 1;
-    $: interval = [100, 50, 1][intervalIndex]
+    let intervalIndex = storable('intervalIndex', 1);
+    $: interval = [100, 50, 1][$intervalIndex]
 </script>
 
 <style>
@@ -161,12 +170,12 @@ int main() {
         {:else}
             <button on:click={run} title="Run code">
                 <img src={playSVG} alt=""></button>
-            <button on:click={() => intervalIndex = (intervalIndex+1) % 3}
-                    title={['slow', 'normal', 'instant'][intervalIndex] + ' code execution speed'}>
-                <img src={[speed1SVG, speed2SVG, speed3SVG][intervalIndex]} alt={['slow', 'normal', 'fast'][intervalIndex]}
+            <button on:click={() => $intervalIndex = ($intervalIndex+1) % 3}
+                    title={['slow', 'normal', 'instant'][$intervalIndex] + ' code execution speed'}>
+                <img src={[speed1SVG, speed2SVG, speed3SVG][$intervalIndex]} alt={['slow', 'normal', 'fast'][$intervalIndex]}
                      style="transform: rotate(90deg)">
             </button>
-            <button on:click={save} title="Save code to browser. (Code is automatically saved when run)">
+            <button on:click={() => save(true)} title="Save code to browser. (automatically saved every 5s)">
                 <img src={saveSVG} alt=""></button>
             <button on:click={() => showExampleSelector = true} title="Load an example">
                 <img src={examplesSVG} alt=""></button>
@@ -174,6 +183,8 @@ int main() {
                 <img src={infoSVG} alt=""></button>
             <button on:click={() => showHelp = true} title="Get help with using the simulator">
                 <img src={helpSVG} alt=""></button>
+            <button on:click={() => showSettings = true} title="Change simulator settings">
+                <img src={settingsSVG} alt=""></button>
         {/if}
     </div>
     <div id="editor" style="flex: 1">{$code}</div>
@@ -199,5 +210,11 @@ int main() {
 {#if showHelp}
     <Overlay on:close={() => showHelp = false}>
         <Help/>
+    </Overlay>
+{/if}
+
+{#if showSettings}
+    <Overlay on:close={() => showSettings = false}>
+        <Settings/>
     </Overlay>
 {/if}

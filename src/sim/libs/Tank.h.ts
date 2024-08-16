@@ -23,34 +23,34 @@ function turnOffMotors(rt: CRuntime, _this: any) {
     lastSet.right = 0
 }
 
+function calculateRobot() {
+    robot.set({...$robot, v: (lastSet.left + lastSet.right) / 2, w: (lastSet.right - lastSet.left)})
+}
+
 let straightTimeout: number | undefined;
 //   void setLeftMotorPWM(int pwm);   // sets motors 1 and 2 speeds to specified pwm (pwm: -255 to 255)
 function setLeftMotorPWM(rt: CRuntime, _this: any, pwm: any) {
     if (!begun) throw new Error('You must call Tank.begin() before calling Tank.setLeftMotorPWM()')
-    if (pwm.v !== clamp(pwm.v, 0, 255)) throw new Error(`In function Tank.setLeftMotorPWM(), PWM values must be between 0 and 255. You used ${pwm.v}.`)
+    if (pwm.v !== clamp(pwm.v, -255, 255)) throw new Error(`In function Tank.setLeftMotorPWM(), PWM values must be between -255 and 255. You used ${pwm.v}.`)
     lastSet.left = pwm.v / 255
     clearTimeout(straightTimeout);
     // in the case where lastSet.right is 0, delay the start of the robot to allow the other wheel to be set.
     if (lastSet.right === 0) {
-        straightTimeout = setTimeout(() => {
-            robot.set({...$robot, v: (lastSet.left + lastSet.right) / 2, w: (lastSet.right - lastSet.left) / 0.12})
-        }, 110)
+        straightTimeout = setTimeout(calculateRobot, 110)
     } else
-        robot.set({...$robot, v: (lastSet.left + lastSet.right) / 2, w: (lastSet.right - lastSet.left) / 0.12})
+        calculateRobot()
 }
 //   void setRightMotorPWM(int pwm);  // sets motors 3 and 4 speeds to specified pwm (pwm: -255 to 255)
 function setRightMotorPWM(rt: CRuntime, _this: any, pwm: any) {
     if (!begun) throw new Error('You must call Tank.begin() before calling Tank.setRightMotorPWM()')
-    if (pwm.v !== clamp(pwm.v, 0, 255)) throw new Error(`In function Tank.setRightMotorPWM(), PWM values must be between 0 and 255. You used ${pwm.v}.`)
+    if (pwm.v !== clamp(pwm.v, -255, 255)) throw new Error(`In function Tank.setRightMotorPWM(), PWM values must be between -255 and 255. You used ${pwm.v}.`)
     lastSet.right = pwm.v / 255
     clearTimeout(straightTimeout);
     // in the case where lastSet.right is 0, delay the start of the robot to allow the other wheel to be set.
     if (lastSet.left === 0) {
-        straightTimeout = setTimeout(() => {
-            robot.set({...$robot, v: (lastSet.left + lastSet.right) / 2, w: (lastSet.right - lastSet.left) / 0.12})
-        }, 110)
+        straightTimeout = setTimeout(calculateRobot, 110)
     } else
-        robot.set({...$robot, v: (lastSet.left + lastSet.right) / 2, w: (lastSet.right - lastSet.left) / 0.12})
+        calculateRobot()
 }
 //   float readDistanceSensor(int sensorId);  // reads and returns distance in meters (maximum of 1) from specified ultrasonic distance sensor (only valid for sensorIds 1 or 7)
 function readDistanceSensor(rt: CRuntime, _this: any, sensorId: any) {

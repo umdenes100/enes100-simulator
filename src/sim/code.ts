@@ -1,11 +1,12 @@
-import {clearOutputWhenRun, delay, output, variables} from "../state";
+import {clearOutputWhenRun, delay, output, resetRobotWhenRun, variables} from "../state";
 import {get, type Writable, writable} from "svelte/store";
 import type {Debugger} from "./JSCPPTypes";
 import {Enes100H} from "./libs/Enes100.h";
 import {TankH} from "./libs/Tank.h";
 import {ArduinoH} from "./libs/Arduino.h";
-import {sleep} from "./utils";
+import {generateID, sleep} from "./utils";
 import {errorClarifiers} from "./checkCode";
+import {resetRobot, stopRobot} from "./simulator";
 
 export const ignored_variables = new Set<string>();
 ignored_variables.add('main')
@@ -13,6 +14,7 @@ export function addIgnoredVariable(v: string) {
     ignored_variables.add(v)
 }
 
+// noinspection JSUnusedGlobalSymbols
 const config = {
     debug: true,
     includes: {
@@ -38,16 +40,20 @@ type Session = {
     line: number | undefined;
     deb: Debugger;
     running: boolean
+    id: string // Unique ID for the session
 }
+// A note about state - if !id then there is no session. If id but not running it is paused.
 export const session: Writable<Session | undefined> = writable(undefined);
 
 export function startCode(code: string, interval: number = 100) {
     // console.clear()
     if (get(clearOutputWhenRun)) output.set('')
-    const input = "4321";
+    if (get(resetRobotWhenRun)) {
+        resetRobot(); stopRobot();
+    }
     try {
         // @ts-ignore
-        deb = JSCPP.run(code, input, config);
+        deb = JSCPP.run(code, '', config);
     } catch (e: any) {
         // debugger
         console.error(e)
@@ -62,10 +68,12 @@ export function startCode(code: string, interval: number = 100) {
         continue: () => resumeCodeInInterval(interval),
         step: nextCode,
         pause: pauseCodeInInterval,
-        running: false,
+        running: false, // Running if a current statement is executing.
         deb: deb,
-        line: deb.prevNode?.sLine
+        line: deb.prevNode?.sLine,
+        id: generateID()
     })
+    // noinspection JSIgnoredPromiseFromCall
     nextCode();
 }
 
@@ -77,16 +85,22 @@ delay.subscribe(d => $delay = d)
 session.subscribe(s => $session = s)
 
 async function nextCode() {
-
+    console.log('next code')
+    let id = $session?.id;
     let done;
     do {
         try {
             if (!deb) return;
             done = deb.next()
             if ($delay) {
-                // console.log('delaying', $delay)
-                await sleep($delay)
-                delay.set(undefined)
+                let d = $delay;
+                delay.set(undefined);
+                await sleep(d);
+                // If after the sleep the session is not running, then we should stop the code
+                if (id != $session?.id) {
+                    console.log('session ended while sleeping', $session?.running, $session?.id, id)
+                    return;
+                }
             }
             if ($session && !$session?.running){
                 // console.log('updating variables')
@@ -100,7 +114,6 @@ async function nextCode() {
     } while (!done && (deb?.prevNode?.sLine === undefined || deb.prevNode?.sLine > programLength))
 
     session.update((s) => (s ? {...s, line: s.deb.prevNode?.sLine} : undefined))
-    // console.log('done', done, deb.prevNode?.sLine, programLength)
 
     // Done either has a value or is undefined if the program is finished
     if (done !== false) {
@@ -121,6 +134,7 @@ function resumeCodeInInterval(step: number = 100) {
         if (deb && $session?.running)
             timeout = setTimeout(run, step)
     }
+    // noinspection JSIgnoredPromiseFromCall
     run();
 }
 
