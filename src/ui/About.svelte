@@ -15,8 +15,9 @@
         align-items: center;
         gap: 5px;
     }
+
     a {
-        display : inline;
+        display: inline;
     }
 </style>
 
@@ -65,3 +66,14 @@
     <li><a href="https://enes100.umd.edu/libraries/tank" target="_blank">Tank.h</a></li>
     <li>Most functions and defines in Arduino.h</li>
 </ul>
+
+<div>
+    Created by the ENES100 Teaching team, including:
+    <ul>
+        <li>Forrest Milner (Initial codebase)</li>
+        <li>and everyone else who will eventually maintain this project (add your name below when you dev)</li>
+    </ul>
+    <small>Interested in developing these kind of things an others? As your TA about
+        becoming an LTF! We need your skills and enthusiasm.</small>
+    <!--  Future developers, add your name here! Take credit!  -->
+</div>
