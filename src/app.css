@@ -29,8 +29,8 @@ html, body {
 
 
 body {
-    background: #343434;
-    color: whitesmoke;
+    background-color: #121B21;
+    color: white;
     overflow: hidden;
 }
 
@@ -74,6 +74,14 @@ table tr > :first-child {
     white-space: nowrap;
     padding-right: 10px;
     color: #7b8686;
+}
+
+.ace_content, textarea {
+    background: #272c30;
+}
+
+.ace_gutter-layer {
+    background: #121b21;
 }
 
 /* All our scrollbars should look consistent */

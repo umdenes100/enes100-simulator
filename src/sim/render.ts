@@ -2,10 +2,10 @@
 
 import type {Arena, Robot} from "./Types";
 import {arena, draggingRobot, robot, robotDimensions} from "../state";
-import {distanceSensor, physics} from "./simulator";
+import {physics} from "./simulator";
 
 const resolution = 400; // pixels per meter (4 meters = 2000 pixels)
-const arenaColor = "#808080";
+const arenaColor = "#40484f";
 
 let ctx: CanvasRenderingContext2D | undefined;
 let $arena: Arena, $robot: Robot, $draggingRobot: boolean;

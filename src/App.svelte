@@ -50,7 +50,7 @@
     <div style="width: calc({$simulationWidth}% - 3px);">
         <Editor width={$simulationWidth}/>
     </div>
-    <div style="width: 6px; background: white; cursor: col-resize;" on:mousedown={startDrag} role="none">
+    <div style="width: 6px; background: #40484f; cursor: col-resize;" on:mousedown={startDrag} role="none">
     </div>
     <div style="width: calc({100 - $simulationWidth}% - 3px)">
         <Simulator/>

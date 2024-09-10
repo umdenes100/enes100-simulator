@@ -12,7 +12,7 @@ export function formatBytes(a: number): string {
     return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${["B", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]}`
 }
 
-export function round(num: number, precision: number = 0) {
+export function round(num: number, precision: number = 0): number {
     if (Math.abs(num) < Math.pow(10, -precision)) return 0;
     if(!Number.isFinite(num)) return num;
     let number = +(Math.round(Number(num + "e" + precision)) + "e-" + precision);

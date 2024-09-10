@@ -125,7 +125,7 @@ int main() {
         resize();
     }
 
-    let intervalIndex = storable('intervalIndex', 1);
+    let intervalIndex = storable('Editor.intervalIndex', 2);
     $: interval = [100, 50, 1][$intervalIndex]
 </script>
 
@@ -137,6 +137,7 @@ int main() {
         height: 100%;
     }
 
+    /*noinspection CssUnusedSymbol*/
     :global(.lineMarker) {
         position: absolute;
         background: rgba(100, 200, 100, 0.5);

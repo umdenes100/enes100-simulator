@@ -24,7 +24,7 @@ function turnOffMotors(rt: CRuntime, _this: any) {
 }
 
 function calculateRobot() {
-    robot.set({...$robot, v: (lastSet.left + lastSet.right) / 2, w: (lastSet.right - lastSet.left)})
+    robot.set({...$robot, v: (lastSet.left + lastSet.right) / 4, w: (lastSet.right - lastSet.left)})
 }
 
 let straightTimeout: number | undefined;
@@ -35,10 +35,10 @@ function setLeftMotorPWM(rt: CRuntime, _this: any, pwm: any) {
     lastSet.left = pwm.v / 255
     clearTimeout(straightTimeout);
     // in the case where lastSet.right is 0, delay the start of the robot to allow the other wheel to be set.
-    if (lastSet.right === 0) {
-        straightTimeout = setTimeout(calculateRobot, 110)
-    } else
-        calculateRobot()
+    // if (lastSet.right === 0) {
+    straightTimeout = setTimeout(calculateRobot, 110)
+    // } else
+    //     calculateRobot()
 }
 //   void setRightMotorPWM(int pwm);  // sets motors 3 and 4 speeds to specified pwm (pwm: -255 to 255)
 function setRightMotorPWM(rt: CRuntime, _this: any, pwm: any) {
