@@ -28,6 +28,7 @@ export function checkCode(code: string): [string, boolean] {
 }
 
 export function errorClarifiers(error: string): string {
+    console.log(error)
     if (error.includes("Parsing Failure:"))
         return error.replaceAll("Parsing Failure:", "Parsing Failure: (Did you forget a semi-colon?)")
     if (error.includes("no method begin in VisionSystemClient accepts"))
@@ -40,5 +41,7 @@ export function errorClarifiers(error: string): string {
         return `${error}\n\nHint: no Arduino libraries other than Arduino.h, Enes100.h, and Tank.h are supported. From the std lib, only iostream (only cin and cout and endl), cmath, cctype, cstring, cstdio (partial), cstdlib (partial) are supported. Click the info button to learn more about limitations of the simulator.`
     if (error.includes('method o(()) is not defined'))
         return `${error.replaceAll('method o(()) is not defined in ', 'You cannot call this as a function: ')}\n\nHint: Review what the functions you can call are.`
+    if (error.includes('method abs with parameters ((double)) is already defined'))
+        return `Please include math.h / cmath before including Enes100.h or Tank.h.`
     return error;
 }

@@ -11,9 +11,6 @@
     height: 100%;
     color-scheme: dark;
     text-rendering: optimizeLegibility;
-    --toastContainerRight: auto;
-    --toastContainerLeft: 1rem;
-    --toastContainerTop: calc(1rem + 58px);
 }
 
 html, body {

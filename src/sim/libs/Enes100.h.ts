@@ -40,15 +40,13 @@ export const Enes100Defines: { [key: string]: number } = {
     "WATER_TYPE": 1,
     "FRESH_UNPOLLUTED": 0,
     "FRESH_POLLUTED": 1,
-    "SALT_UNPOLLUTED": 2,
-    "SALT_POLLUTED": 3,
     "LOCATION": 0,
     "PERCENTAGE": 1,
 }
 let begun = false;
 
 // Enes100.begin(const char* teamName, byte teamType, int markerId, int wifiModuleTX, int wifiModuleRX)
-function begin(rt: CRuntime, _this: any, _teamName: string, _teamType: number, _markerId: number, wifiModuleTX: number, wifiModuleRX: number) {
+function begin(rt: CRuntime, _this: any, _teamName: string, _teamType: number, _markerId: number, _wifiModuleTX: number, _wifiModuleRX: number) {
     teamName.set(rt.makeValueString(_teamName).replaceAll('"', ''));
     const teamTypeString = rt.makeValueString(_teamType).replaceAll('"', '')
     // See if we can make it a number
@@ -132,7 +130,7 @@ function mission(rt: CRuntime, _this: any, type: any, message: any) {
         },
         4: {
             0: (msg: number) => `The depth of the water is ${msg}mm.`,
-            1: (msg: number) => `The water is ${['FRESH and UNPOLLUTED', 'FRESH and POLLUTED', 'SALTY and UNPOLLUTED', 'SALTY and POLLUTED'][msg]}.`,
+            1: (msg: number) => `The water is ${['FRESH and UNPOLLUTED', 'FRESH and POLLUTED'][msg]}.`,
         },
         5: {
             0: (msg: number) => `The location of the anomaly is ${round(msg / 1000)},${msg % 1000}`,

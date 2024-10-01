@@ -67,8 +67,6 @@ void setup() {
     Enes100.mission(DEPTH, 1000);
     Enes100.mission(WATER_TYPE, FRESH_UNPOLLUTED);
     Enes100.mission(WATER_TYPE, FRESH_POLLUTED);
-    Enes100.mission(WATER_TYPE, SALT_UNPOLLUTED);
-    Enes100.mission(WATER_TYPE, SALT_POLLUTED);
     
     Enes100.begin("Simulator", SEED, 3, 8, 9);
     Enes100.mission(PERCENTAGE, 100);
