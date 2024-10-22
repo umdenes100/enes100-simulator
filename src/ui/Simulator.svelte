@@ -1,8 +1,8 @@
 <script lang="ts">
     import {onMount} from "svelte";
     import {startRender, stopRender} from "../sim/render";
-    import {arena, draggingRobot, output, robot} from "../state";
-    import {resetRobot, stopRobot} from "../sim/simulator";
+    import {arena, draggingRobot, output, randomize, resetRobot, robot} from "../state";
+    import {stopRobot} from "../sim/simulator";
     import Controls from "./Controls.svelte";
     import {clamp, round} from "../sim/utils";
 
@@ -116,6 +116,7 @@
         <!--        </label>-->
         <button on:click={resetRobot}>Reset robot</button>
         <button on:click={stopRobot}>Stop Robot</button>
+        <button on:click={randomize}>Randomize</button>
     </div>
     <span>
         </span>

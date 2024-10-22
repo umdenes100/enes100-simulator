@@ -1,4 +1,4 @@
-import {clearOutputWhenRun, delay, output, resetRobotWhenRun, variables} from "../state";
+import {clearOutputWhenRun, delay, output, resetRobot, resetRobotWhenRun, variables} from "../state";
 import {get, type Writable, writable} from "svelte/store";
 import type {Debugger} from "./JSCPPTypes";
 import {Enes100H} from "./libs/Enes100.h";
@@ -6,7 +6,7 @@ import {TankH} from "./libs/Tank.h";
 import {ArduinoH} from "./libs/Arduino.h";
 import {generateID, sleep} from "./utils";
 import {errorClarifiers} from "./checkCode";
-import {resetRobot, stopRobot} from "./simulator";
+import {stopRobot} from "./simulator";
 
 export const ignored_variables = new Set<string>();
 ignored_variables.add('main')

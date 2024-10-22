@@ -25,10 +25,6 @@ function normalizeVector(v: Point, len: number = 1): Point {
     return [v[0] / m, v[1] / m]
 }
 
-export function resetRobot() {
-    robot.update(r => ({...r, x: .55, y: .55, angle: 0}));
-}
-
 export function stopRobot() {
     robot.update(r => ({...r, v: 0, w: 0}));
 }

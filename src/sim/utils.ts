@@ -13,11 +13,9 @@ export function formatBytes(a: number): string {
 }
 
 export function round(num: number, precision: number = 0): number {
-    if (Math.abs(num) < Math.pow(10, -precision)) return 0;
+    if (Math.abs(num) < Math.pow(10, -precision - 1)) return 0;
     if(!Number.isFinite(num)) return num;
-    let number = +(Math.round(Number(num + "e" + precision)) + "e-" + precision);
-    if (isNaN(number)) debugger
-    return number;
+    return +(Math.round(Number(num + "e" + precision)) + "e-" + precision);
 }
 
 

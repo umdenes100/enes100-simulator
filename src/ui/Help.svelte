@@ -121,3 +121,10 @@
     In real life, robots move randomly all the time. Especially over the rumble strips you will
     need to assume that the robot will move randomly. This is your reminder!
 </div>
+
+<h2>Tips</h2>
+<ul>
+    <li>Click and drag the robot to move it anywhere on the map, even when your robot is driving!</li>
+    <li>Randomize the robot to randomize obstacles and robot location.</li>
+    <li>Resetting the robot will go back to the previously randomized location.</li>
+</ul>
