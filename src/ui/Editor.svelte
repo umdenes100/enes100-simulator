@@ -27,6 +27,7 @@
     import infoSVG from "./buttons/info.svg";
     import helpSVG from "./buttons/help.svg";
     import settingsSVG from "./buttons/settings.svg";
+    import fullscreenSVG from "./buttons/fullscreen.svg";
     import ExampleSelector from "./ExampleSelector.svelte";
     import About from "./About.svelte";
     import Overlay from "./Overlay.svelte";
@@ -97,6 +98,7 @@
     }
 
     let lastSaved = 0;
+
     function save(showAlert = false) {
         if (Date.now() - lastSaved < 1000) return;
         lastSaved = Date.now();
@@ -186,6 +188,11 @@ int main() {
                 <img src={helpSVG} alt=""></button>
             <button on:click={() => showSettings = true} title="Change simulator settings">
                 <img src={settingsSVG} alt=""></button>
+            {#if window.self !== window.top}
+                <a href="https://umdenes100.github.io/enes100-simulator/" title="Open fullscreen in a new tab">
+                    <button><img src={fullscreenSVG} alt=""></button>
+                </a>
+            {/if}
         {/if}
     </div>
     <div id="editor" style="flex: 1">{$code}</div>

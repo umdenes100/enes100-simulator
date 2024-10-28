@@ -55,6 +55,16 @@ function render() {
         }
     }
 
+    // Render the log. Rect from x=3.4, goes from y=0 to y=1. Log is .1 wide (so 3.35 to 3.45)
+    ctx.fillStyle = "#B87333";
+    ctx.shadowOffsetX = 1;
+    ctx.shadowOffsetY = -1;
+    ctx.fillRect(3.35 * resolution, 0, .1 * resolution, resolution);
+    // Limbo top and bottom
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(3.35 * resolution, resolution, .1 * resolution, .03 * resolution);
+    ctx.fillRect(3.35 * resolution, 1.97 * resolution, .1 * resolution, .03 * resolution);
+
     // Render the robot
     ctx.fillStyle = "white";
 
@@ -68,10 +78,14 @@ function render() {
     ctx.rotate(angle);
 
     if ($draggingRobot) {
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
         ctx.shadowBlur = 20;
-        ctx.shadowOffsetX = 5;
-        ctx.shadowOffsetY = -5;
+    } else {
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+        ctx.shadowBlur = 10;
     }
+    ctx.shadowOffsetX = 5;
+    ctx.shadowOffsetY = -5;
 
     //Border
     ctx.strokeStyle = "black";
@@ -97,9 +111,11 @@ function render() {
     ctx.moveTo(0, 0);
     ctx.lineTo(size * resolution, 0);
     ctx.stroke();
-
     ctx.restore();
 
+    // Now limbo, which is y=1 to y=2. only .05 wide.
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(3.375 * resolution, 1.03 * resolution, .05 * resolution, resolution * .94);
 
     requestAnimationFrame(render);
 }
