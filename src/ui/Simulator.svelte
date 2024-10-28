@@ -1,7 +1,7 @@
 <script lang="ts">
     import {onMount} from "svelte";
     import {startRender, stopRender} from "../sim/render";
-    import {arena, draggingRobot, output, randomize, resetRobot, robot} from "../state";
+    import {arena, clearObstacles, draggingRobot, output, randomize, resetRobot, robot} from "../state";
     import {stopRobot} from "../sim/simulator";
     import Controls from "./Controls.svelte";
     import {clamp, round} from "../sim/utils";
@@ -57,6 +57,7 @@
     * {
         user-select: none;
     }
+
     #container {
         display: flex;
         flex-direction: column;
@@ -117,6 +118,11 @@
         <button on:click={resetRobot}>Reset robot</button>
         <button on:click={stopRobot}>Stop Robot</button>
         <button on:click={randomize}>Randomize</button>
+        {#if $arena.obstacles.length}
+            <button on:click={clearObstacles}>Remove Obstacles</button>
+        {:else}
+            <button on:click={randomize}>Add Obstacles</button>
+        {/if}
     </div>
     <span>
         </span>

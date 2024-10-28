@@ -92,4 +92,10 @@ export function randomize() {
     })
 }
 
+export function clearObstacles() {
+    arena.update(arena => {
+        return {...arena, obstacles: []}
+    })
+}
+
 reset()
