@@ -189,9 +189,7 @@ int main() {
             <button on:click={() => showSettings = true} title="Change simulator settings">
                 <img src={settingsSVG} alt=""></button>
             {#if window.self !== window.top}
-                <a href="https://umdenes100.github.io/enes100-simulator/" title="Open fullscreen in a new tab">
-                    <button><img src={fullscreenSVG} alt=""></button>
-                </a>
+                <button title="Open fullscreen in a new tab" on:click={() => window.open("https://umdenes100.github.io/enes100-simulator/")}><img src={fullscreenSVG} alt=""></button>
             {/if}
         {/if}
     </div>
