@@ -45,8 +45,8 @@ export const Enes100Defines: { [key: string]: number } = {
 }
 let begun = false;
 
-// Enes100.begin(const char* teamName, byte teamType, int markerId, int wifiModuleTX, int wifiModuleRX)
-function begin(rt: CRuntime, _this: any, _teamName: string, _teamType: number, _markerId: number, _wifiModuleTX: number, _wifiModuleRX: number) {
+// Enes100.begin(const char* teamName, byte teamType, int markerId, int roomNumber, int wifiModuleTX, int wifiModuleRX)
+function begin(rt: CRuntime, _this: any, _teamName: string, _teamType: number, _markerId: number, _roomNumber: number, _wifiModuleTX: number, _wifiModuleRX: number) {
     teamName.set(rt.makeValueString(_teamName).replaceAll('"', ''));
     const teamTypeString = rt.makeValueString(_teamType).replaceAll('"', '')
     // See if we can make it a number
@@ -62,6 +62,7 @@ function begin(rt: CRuntime, _this: any, _teamName: string, _teamType: number, _
     } else {
         throw new Error(`In Enes100.begin, you used an invalid marker ID: ${markerIdString}. Remember, marker ID is not a string! (Ex: should be 1 not "1")`)
     }
+    // Room number is ignored in simulator
     // console.log('Began with team name:', get(teamName), 'team type:', get(teamType), 'marker ID:', get(markerId))
     begun = true;
 }
@@ -159,7 +160,7 @@ export const Enes100H = {
         const typeVisionSystemClient = rt.newClass("VisionSystemClient", []);
         const typeSig = rt.getTypeSignature(typeVisionSystemClient);
         rt.types[typeSig].father = "object";
-        rt.regFunc(begin, typeVisionSystemClient, "begin", [rt.normalPointerType(rt.charTypeLiteral), rt.intTypeLiteral, rt.intTypeLiteral, rt.intTypeLiteral, rt.intTypeLiteral], rt.voidTypeLiteral);
+        rt.regFunc(begin, typeVisionSystemClient, "begin", [rt.normalPointerType(rt.charTypeLiteral), rt.intTypeLiteral, rt.intTypeLiteral, rt.intTypeLiteral, rt.intTypeLiteral, rt.intTypeLiteral], rt.voidTypeLiteral);
         rt.regFunc(getX, typeVisionSystemClient, "getX", [], rt.floatTypeLiteral);
         rt.regFunc(getY, typeVisionSystemClient, "getY", [], rt.floatTypeLiteral);
         rt.regFunc(getTheta, typeVisionSystemClient, "getTheta", [], rt.floatTypeLiteral);
