@@ -1,4 +1,3 @@
-
 /***
 
 
@@ -8,6 +7,15 @@ export function checkCode(code: string): [string, boolean] {
         alert("Code must contain setup and loop functions.")
         return [code, false];
     }
+
+    // Check for empty loop
+    const loopBody = extractFunctionBody(code, "loop");
+    
+    if (loopBody === null || !loopBody.replace(/\/\/.*|\/\*[\s\S]*?\*\//g, '').trim()) {
+        alert("Warning: Your loop function is empty. Please add some code (a delay is ok).");
+        return [code, false];
+    }
+
     for (const header of ["Enes100.h", "Tank.h", "Arduino.h"]) {
         if (!code.includes(`#include "${header}"`)) {
             alert(`Your program does not include the library ${header}. I'll add it for you at the top with "#include "${header}"".`)
@@ -44,4 +52,10 @@ export function errorClarifiers(error: string): string {
     if (error.includes('method abs with parameters ((double)) is already defined'))
         return `Please include math.h / cmath before including Enes100.h or Tank.h.`
     return error;
+}
+
+function extractFunctionBody(code: string, functionName: string): string | null {
+    const regex = new RegExp(`${functionName}\\([^)]*\\)\\s*\\{([^}]*)\\}`);
+    const match = code.match(regex);
+    return match ? match[1].trim() : null;
 }

@@ -131,5 +131,6 @@
         Autoscroll
         <input type="checkbox" bind:checked={autoscroll} disabled={$output.length > 9995}>
     </label>
-    <textarea bind:value={$output} style="flex: 1; font-family: monospace; resize: none" bind:this={elem} readonly/>
+    <!--suppress HtmlUnknownAttribute -->
+    <textarea value={$output.replaceAll('\\n', '\n')} style="flex: 1; font-family: monospace; resize: none" bind:this={elem} readonly/>
 </div>
