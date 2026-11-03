@@ -15,6 +15,11 @@ export const Enes100Defines: { [key: string]: number } = {
     "FIRE": 3,
     "WATER": 4,
     "SEED": 5,
+    /*
+    Added hydrogen mission
+    Maggie Crooks, 11/2/26
+    */
+    "HYDROGEN": 6,
     "DIRECTION": 0,
     "LENGTH": 1,
     "HEIGHT": 2,
@@ -42,6 +47,22 @@ export const Enes100Defines: { [key: string]: number } = {
     "FRESH_POLLUTED": 1,
     "LOCATION": 0,
     "PERCENTAGE": 1,
+    /*
+    Added hydrogen mission
+    Maggie Crooks, 11/2/26
+    */
+   "LED_COLOR": 0,
+   "VOLTAGE_OUTPUT": 1,
+   "WHITE": 0,
+   "RED": 1,
+   "YELLOW": 2,
+   "GREEN": 3,
+   "BLUE": 4,
+   "VOLTAGE_1": 0,
+   "VOLTAGE_2": 1,
+   "VOLTAGE_3": 2,
+   "VOLTAGE_4": 3,
+   "VOLTAGE_5": 4,
 }
 let begun = false;
 
@@ -136,6 +157,14 @@ function mission(rt: CRuntime, _this: any, type: any, message: any) {
         5: {
             0: (msg: number) => `The location of the anomaly is ${round(msg / 1000)},${msg % 1000}`,
             1: (msg: number) => `The percentage of the anomaly is ${msg}`,
+        },
+        /*
+        Added hydrogen mission
+        Maggie Crooks, 11/2/26
+        */
+        6: {
+            0: (msg: number) => `The color of the LED is ${msg}.`,
+            1: (msg: number) => `The voltage of the hydrogen cell is ${msg}`,
         }
     }
     try {

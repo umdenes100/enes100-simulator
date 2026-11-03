@@ -73,6 +73,18 @@ void setup() {
     // In the simulator, Coordinate only works in this way. You cannot declare coordinate objects.
     Enes100.mission(LOCATION, Coordinate(100, 100));
     Enes100.mission(LOCATION, Coordinate(200, 200));
+
+    Enes100.begin("Simulator", HYDROGEN, 3, 1116, 8, 9);
+    Enes100.mission(LED_COLOR, WHITE);
+    Enes100.mission(LED_COLOR, RED);
+    Enes100.mission(LED_COLOR, YELLOW);
+    Enes100.mission(LED_COLOR, GREEN);
+    Enes100.mission(LED_COLOR, BLUE);
+    Enes100.mission(VOLTAGE_OUTPUT, VOLTAGE_1);
+    Enes100.mission(VOLTAGE_OUTPUT, VOLTAGE_2);
+    Enes100.mission(VOLTAGE_OUTPUT, VOLTAGE_3);
+    Enes100.mission(VOLTAGE_OUTPUT, VOLTAGE_4);
+    Enes100.mission(VOLTAGE_OUTPUT, VOLTAGE_5);
     
     Tank.begin();
     Tank.setLeftMotorPWM(100);
