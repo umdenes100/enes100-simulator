@@ -148,23 +148,23 @@ function mission(rt: CRuntime, _this: any, type: any, message: any) {
         },
         3: {
             0: (msg: number) => `The number of candles lit is ${msg}.`,
-            1: (msg: number) => `The topography of the fire mission is: ${['A', 'B', 'C'][msg]}`,
+            1: (msg: number) => `The topography of the fire mission is: ${['A', 'B', 'C'][msg]}.`,
         },
         4: {
             0: (msg: number) => `The depth of the water is ${msg}mm.`,
             1: (msg: number) => `The water is ${['FRESH and UNPOLLUTED', 'FRESH and POLLUTED'][msg]}.`,
         },
         5: {
-            0: (msg: number) => `The location of the anomaly is ${round(msg / 1000)},${msg % 1000}`,
-            1: (msg: number) => `The percentage of the anomaly is ${msg}`,
+            0: (msg: number) => `The location of the anomaly is ${round(msg / 1000)},${msg % 1000}.`,
+            1: (msg: number) => `The percentage of the anomaly is ${msg}.`,
         },
         /*
         Added hydrogen mission
         Maggie Crooks, 11/2/26
         */
         6: {
-            0: (msg: number) => `The color of the LED is ${msg}.`,
-            1: (msg: number) => `The voltage of the hydrogen cell is ${msg}`,
+            0: (msg: number) => `The color of the LED is ${['WHITE', 'RED', 'YELLOW', 'GREEN', 'BLUE'][msg]}.`,
+            1: (msg: number) => `The voltage of the hydrogen cell is ${['VOLTAGE_1', 'VOLTAGE_2', 'VOLTAGE_3', 'VOLTAGE_4', 'VOLTAGE_5'][msg]}.`,
         }
     }
     try {
