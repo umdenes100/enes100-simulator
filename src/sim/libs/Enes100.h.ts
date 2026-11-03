@@ -164,7 +164,7 @@ function mission(rt: CRuntime, _this: any, type: any, message: any) {
         */
         6: {
             0: (msg: number) => `The color of the LED is ${['WHITE', 'RED', 'YELLOW', 'GREEN', 'BLUE'][msg]}.`,
-            1: (msg: number) => `The voltage of the hydrogen cell is ${['VOLTAGE_1', 'VOLTAGE_2', 'VOLTAGE_3', 'VOLTAGE_4', 'VOLTAGE_5'][msg]}.`,
+            1: (msg: number) => `The voltage of the hydrogen cell is ${['1 VOLT', '2 VOLTS', '3 VOLTS', '4 VOLTS', '5 VOLTS'][msg]}.`,
         }
     }
     try {
